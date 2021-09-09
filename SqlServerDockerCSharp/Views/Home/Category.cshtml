@@ -1,0 +1,178 @@
+﻿@page
+@{
+    //prevent cache problem
+    Random random = new Random();
+    int num = random.Next(1000);
+    List<Category> categories = new();
+    try
+    {
+        var db = new SolarContext();
+        categories = db.Categorys.ToList();
+    }
+    catch (Exception ex)
+    {
+        System.Diagnostics.Debug.WriteLine(ex.Message);
+        // suppose we need a library  nooo way ..  later :P
+        //    var logWriter = new System.IO.StreamWriter(ViewBag.mapPath);
+        //     logWriter.WriteLine("Log message :" + ex.Message);
+        //     logWriter.Dispose();
+    }
+    var notification = "";
+
+    if (ViewBag.notification != null)
+    {
+        if (ViewBag.notification.Length > 0)
+        {
+            notification = ViewBag.notification;
+        }
+    }
+    var stringNotification = "";
+    switch (notification)
+    {
+        case "createSuccess":
+            stringNotification = "You have create a record";
+            break;
+        case "updateSuccess":
+            stringNotification = "You have updated a record";
+            break;
+        case "deleteSuccess":
+            stringNotification = "You have delete a record";
+            break;
+    }
+}
+@if (stringNotification.Length > 0)
+{
+    <div class="alert alert-primary" role="alert">
+        @stringNotification
+    </div>
+}
+<table class="table table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <td>
+                <input style="text-align: right" class="form-control" id="CategoryDescription" type="text" />
+            </td>
+            <td>
+                <button type="button" class="btn btn-success" onclick="createRecord()">
+                    <i class="bi bi-plus-circle"></i>
+                    NEW
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">DESCRIPTION</th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var item in categories)
+        {
+            <tr>
+                <th scope="row">
+                    @item.CategoryId
+                </th>
+                <td>
+                    <input class="form-control" id="@item.CategoryId-CategoryDescription" type="text"
+                           value="@item.CategoryDescription" />
+                </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Form Button">
+                        <button type="button" class="btn btn-warning" onclick="updateRecord(@item.CategoryId)">
+                            <i class="bi bi-file-earmark-text"></i>
+                            UPDATE
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                onclick="deleteRecord(@item.CategoryId)">
+                            <i class="bi bi-trash"></i>
+                            DELETE
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>// at here we try to be native as possible and you can use url to ease change the which one you prefer
+    let url = "https://localhost:5001/api/category"; // api url
+    let home = "@Url.RouteUrl(ViewContext.RouteData.Values)";
+    function createRecord() {
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 101) {
+                        console.log("Create Success")
+                        location.assign(home + "?notification=createSuccess&rand=@num")
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        xmlHttpRequest.send("&mode=create&CategoryDescription=" + document.getElementById("CategoryDescription").value);
+
+    }
+
+    function updateRecord(categoryId) {
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 301) {
+                        console.log("Update Success")
+                        location.assign(home + "?notification=updateSuccess&rand=@num&date=" + new Date().getTime())
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        xmlHttpRequest.send("&mode=update&CategoryId=" + categoryId + "&CategoryDescription=" + document.getElementById(categoryId + "-CategoryDescription").value);
+
+    }
+
+    function deleteRecord(CategoryId) {
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 401) {
+                        console.log("Delete Success")
+                        location.assign(home + "?miau=1&notification=deleteSuccess&rand=@num")
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        xmlHttpRequest.send("&mode=delete&CategoryId=" + CategoryId);
+
+    }</script>

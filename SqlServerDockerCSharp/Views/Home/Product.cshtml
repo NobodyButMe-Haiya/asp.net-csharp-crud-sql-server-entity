@@ -1,0 +1,351 @@
+﻿@page
+@{
+    // note this code is private purpose and not suppose to be re-use to other mean  without notice up the developer
+
+    //prevent cache problem
+    Random random = new Random();
+    int num = random.Next(1000);
+    // diamond /  generic whom know . as mention to before just a collection of class ? and more shorter ? erk
+    List<Product> data = new();
+    List<Category> categories = new();
+    try
+    {
+        var db = new SolarContext();
+        // we prefer to try catch in normal way but we unsure it will work . need time
+
+        data = db.Products.OrderBy(x => x.CategoryId).ToList();
+        // this is the reason we don't want one to many .  if 1 to many 100 shoud be okay but if over 500 you need an ajax request instead ..
+        // people is lazy is like to scroooll  compare want to  type
+        categories = db.Categorys.OrderBy(x => x.CategoryId).ToList();
+    }
+    catch (Exception ex)
+    {
+        System.Diagnostics.Debug.WriteLine(ex.Message);
+        // suppose we need a library  nooo way ..  later :P
+        //   var logWriter = new System.IO.StreamWriter(ViewBag.mapPath);
+        //    logWriter.WriteLine("Log message :" + ex.Message);
+        //    logWriter.Dispose();
+    }
+    var notification = "";
+
+    if (ViewBag.notification != null)
+    {
+        if (ViewBag.notification.Length > 0)
+        {
+            notification = ViewBag.notification;
+        }
+    }
+    var stringNotification = "";
+    switch (notification)
+    {
+        case "createSuccess":
+            stringNotification = "You have create a record";
+            break;
+        case "updateSuccess":
+            stringNotification = "You have updated a record";
+            break;
+        case "deleteSuccess":
+            stringNotification = "You have delete a record";
+            break;
+    }
+}
+@if (stringNotification.Length > 0)
+{
+    <div class="alert alert-primary" role="alert">
+        @stringNotification
+    </div>
+}
+<table class="table table-striped">
+    <thead class="table-light">
+        <tr>
+            <th>#</th>
+            <td>
+                <select class="form-control" id="CategoryId">
+                    @{ foreach (var categoryArray in categories.ToList())
+                        {
+                            <option value="@categoryArray.CategoryId">@categoryArray.CategoryDescription</option>
+                        }
+                    }
+                </select>
+            </td>
+            <td>
+                <input class="form-control" id="ProductCode" type="text"/>
+            </td>
+            <td>
+                <input class="form-control" id="ProductDescription" type="text"/>
+            </td>
+            <td>
+                <input class="form-control" id="UnitPrice" type="text" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="$1,000,000.00"/>
+            </td>
+            <td>
+                <button type="button" class="btn btn-success" onclick="createRecord()">
+                    <i class="bi bi-plus-circle"></i>
+                    NEW
+                </button>
+            </td>
+        </tr>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">CATEGORY</th>
+            <th scope="col">CODE</th>
+            <th scope="col">DESCRIPTION</th>
+            <th scope="col">UNIT PRICE</th>
+        </tr>
+    </thead>
+    <tbody>
+
+
+        @foreach (var item in data)
+        {
+            <tr>
+                <th scope="row">
+                    @item.ProductId
+                </th>
+                <td>
+                    <select class="form-control" id="@item.ProductId-CategoryId">
+                        @{ foreach (var categoryArray in categories.ToList())
+                            {
+                                var selected = item.CategoryId == categoryArray.CategoryId ? "selected" : "";
+                                if (item.CategoryId == categoryArray.CategoryId)
+                                {
+                                    // dam weird but as long no memory lost okay lol
+                                    <option value="@categoryArray.CategoryId" selected>@categoryArray.CategoryDescription</option>
+
+                                }
+                                else
+                                {
+                                    <option value="@categoryArray.CategoryId">@categoryArray.CategoryDescription</option>
+
+                                }
+                            }
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input class="form-control" id="@item.ProductId-ProductCode" type="text"
+                           value="@item.ProductCode" />
+                </td>
+                <td>
+                    <input class="form-control" id="@item.ProductId-ProductDescription" type="text"
+                           value="@item.ProductDescription" />
+                </td>
+                <td>
+                    <input class="form-control" id="@item.ProductId-UnitPrice" type="text"
+                           value="@item.UnitPrice" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" data-type="currency" placeholder="$1,000,000.00"/>
+                </td>
+                <td>
+                    <div class="btn-group" role="group" aria-label="Form Button">
+                        <button type="button" class="btn btn-warning" onclick="updateRecord(@item.ProductId)">
+                            <i class="bi bi-file-earmark-text"></i>
+                            UPDATE
+                        </button>
+                        <button type="button" class="btn btn-danger"
+                                onclick="deleteRecord(@item.ProductId)">
+                            <i class="bi bi-trash"></i>
+                            DELETE
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>// at here we try to be native as possible and you can use url to ease change the which one you prefer
+    let url = "https://localhost:5001/api/product"; // api url
+
+    let home = "@Url.RouteUrl(ViewContext.RouteData.Values)";
+    function createRecord() {
+        const CategoryId = document.getElementById("CategoryId").value;
+        const ProductCode = document.getElementById("ProductCode").value;
+        const ProductDescription = document.getElementById("ProductDescription").value;
+        const UnitPrice = document.getElementById("UnitPrice").value;
+
+        if (CategoryId == "" || ProductCode == "" || ProductDescription == "" || UnitPrice == "") {
+            alert("Hey, fill all the field ya !")
+            return false;
+        }
+
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 101) {
+                        console.log("Create Success")
+                        location.assign(home + "?notification=createSuccess&rand=@num")
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        let variableForm = "&CategoryId=" + CategoryId;
+        variableForm += "&ProductCode=" + ProductCode;
+        variableForm += "&ProductDescription=" + ProductDescription;
+        variableForm += "&UnitPrice=" + UnitPrice.replace("$", "");
+
+        xmlHttpRequest.send("&mode=create" + variableForm);
+
+    }
+
+    function updateRecord(ProductId) {
+        console.log(ProductId);
+
+        const CategoryId = document.getElementById(ProductId +"-CategoryId").value;
+        const ProductCode = document.getElementById(ProductId +"-ProductCode").value;
+        const ProductDescription = document.getElementById(ProductId +"-ProductDescription").value;
+        const UnitPrice = document.getElementById(ProductId +"-UnitPrice").value;
+
+        if (CategoryId == "" || ProductCode == "" || ProductDescription == "" || UnitPrice == "") {
+            alert("Hey, fill all the field ya !")
+            return false;
+        }
+
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 301) {
+                        console.log("Update Success")
+                        location.assign(home + "?notification=updateSuccess&rand=@num&date=" + new Date().getTime())
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        let variableForm = "&CategoryId=" + CategoryId;
+        variableForm += "&ProductId=" + ProductId;
+        variableForm += "&ProductCode=" + ProductCode;
+        variableForm += "&ProductDescription=" + ProductDescription;
+        variableForm += "&UnitPrice=" + UnitPrice.replace("$","");
+        xmlHttpRequest.send("&mode=update&" + variableForm);
+
+    }
+
+    function deleteRecord(ProductId) {
+        const xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.open("POST", url);
+        xmlHttpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState === 4) {
+                if (xmlHttpRequest.status === 200) {
+                    console.log("Request 200 : " + xmlHttpRequest.responseText)
+                    const obj = JSON.parse(xmlHttpRequest.responseText);
+                    if (obj.code === 401) {
+                        console.log("Delete Success")
+                        location.assign(home + "?miau=1&notification=deleteSuccess&rand=@num")
+                        return false;
+                    } else {
+                        // popup saying error
+                        console.log("error message : " + obj.message + "Error Code : " + obj.code)
+                    }
+                } else {
+                    console.log("Error", xmlHttpRequest.statusText);
+                }
+            }
+        }
+        xmlHttpRequest.send("&mode=delete&ProductId=" + ProductId);
+
+    }
+
+
+    $("input[data-type='currency']").on({
+        keyup: function () {
+            formatCurrency($(this));
+        },
+        blur: function () {
+            formatCurrency($(this), "blur");
+        }
+    });
+
+
+    function formatNumber(n) {
+        // format number 1000000 to 1,234,567
+        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+
+
+    function formatCurrency(input, blur) {
+        // appends $ to value, validates decimal side
+        // and puts cursor back in right position.
+
+        // get input value
+        var input_val = input.val();
+
+        // don't validate empty input
+        if (input_val === "") { return; }
+
+        // original length
+        var original_len = input_val.length;
+
+        // initial caret position 
+        var caret_pos = input.prop("selectionStart");
+
+        // check for decimal
+        if (input_val.indexOf(".") >= 0) {
+
+            // get position of first decimal
+            // this prevents multiple decimals from
+            // being entered
+            var decimal_pos = input_val.indexOf(".");
+
+            // split number by decimal point
+            var left_side = input_val.substring(0, decimal_pos);
+            var right_side = input_val.substring(decimal_pos);
+
+            // add commas to left side of number
+            left_side = formatNumber(left_side);
+
+            // validate right side
+            right_side = formatNumber(right_side);
+
+            // On blur make sure 2 numbers after decimal
+            if (blur === "blur") {
+                right_side += "00";
+            }
+
+            // Limit decimal to only 2 digits
+            right_side = right_side.substring(0, 2);
+
+            // join number by .
+            input_val =  left_side + "." + right_side;
+
+        } else {
+            // no decimal entered
+            // add commas to number
+            // remove all non-digits
+            input_val = formatNumber(input_val);
+
+            // final formatting
+            if (blur === "blur") {
+                input_val += ".00";
+            }
+        }
+
+        // send updated string to input
+        input.val(input_val);
+
+        // put caret back in the right position
+        var updated_len = input_val.length;
+        caret_pos = updated_len - original_len + caret_pos;
+        input[0].setSelectionRange(caret_pos, caret_pos);
+    }
+
+    </script>
