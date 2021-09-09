@@ -1,25 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SqlServerDockerCSharp.Models;
+using NLog;
 
 namespace SqlServerDockerCSharp.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger)
+        private static Logger logger = LogManager.GetCurrentClassLogger();
+        public HomeController()
         {
-            _logger = logger;
+           
         }
 
         public IActionResult Index()
         {
+            logger.Info("Hell You have visited the Index view" + Environment.NewLine + DateTime.Now);
             return View();
         }
         public IActionResult Product(String notification)

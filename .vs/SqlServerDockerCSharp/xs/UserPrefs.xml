@@ -1,31 +1,24 @@
 ﻿<Properties StartupConfiguration="{6D34FB20-2500-494F-86D3-7B600DD45A2D}|Default">
   <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="SqlServerDockerCSharp/Views/Home/Product.cshtml" Line="154" Column="16" />
-      <File FileName="SqlServerDockerCSharp/Service/ProductCrud.cs" Line="99" Column="12" />
-      <File FileName="SqlServerDockerCSharp/Controllers/ProductController.cs" Line="70" Column="41" />
-      <File FileName="SqlServerDockerCSharp/Controllers/HomeController.cs" />
-      <File FileName="SqlServerDockerCSharp/Models/Product.cs" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/Service/CategoryCrud.cs" Line="107" Column="53" />
-      <File FileName="SqlServerDockerCSharp/Views/Home/Category.cshtml" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/Models/Category.cs" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/appsettings.json" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/log.txt" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/Program.cs" Line="1" Column="1" />
-      <File FileName="SqlServerDockerCSharp/Models/SolarContext.cs" Line="28" Column="56" />
+      <File FileName="SqlServerDockerCSharp/Service/CategoryCrud.cs" Line="92" Column="32" />
+      <File FileName="SqlServerDockerCSharp/Service/ProductCrud.cs" Line="50" Column="35" />
+      <File FileName="SqlServerDockerCSharp/Controllers/CategoryController.cs" Line="20" Column="1" />
+      <File FileName="SqlServerDockerCSharp/Controllers/ProductController.cs" Line="21" Column="10" />
+      <File FileName="SqlServerDockerCSharp/SqlServerDockerCSharp.csproj" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
           <Node name="SqlServerDockerCSharp" expanded="True">
             <Node name="SqlServerDockerCSharp" expanded="True">
-              <Node name="Controllers" expanded="True" />
-              <Node name="Models" expanded="True" />
+              <Node name="Controllers" expanded="True">
+                <Node name="ProductController.cs" selected="True" />
+              </Node>
               <Node name="Service" expanded="True" />
               <Node name="Views" expanded="True">
                 <Node name="Home" expanded="True" />
               </Node>
-              <Node name="appsettings.json" selected="True" />
             </Node>
           </Node>
         </State>
@@ -39,10 +32,7 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/Service/ProductCrud.cs" relfile="SqlServerDockerCSharp/Service/ProductCrud.cs" line="114" column="1" />
-      <Breakpoint file="/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/Service/ProductCrud.cs" relfile="SqlServerDockerCSharp/Service/ProductCrud.cs" line="105" column="1" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
 </Properties>

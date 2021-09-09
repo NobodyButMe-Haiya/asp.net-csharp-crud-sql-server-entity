@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-
+using NLog.Web;
 namespace SqlServerDockerCSharp
 {
     public class Program
@@ -21,6 +21,6 @@ namespace SqlServerDockerCSharp
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                }).UseNLog();
     }
 }

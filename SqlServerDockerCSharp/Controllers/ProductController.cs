@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SqlServerDockerCSharp.Models;
 using SqlServerDockerCSharp.Service;
+using Microsoft.Extensions.Logging;
+using NLog;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SqlServerDockerCSharp.Controllers
@@ -12,11 +14,11 @@ namespace SqlServerDockerCSharp.Controllers
     [Route("api/[controller]")]
     public class ProductController : Controller
     {
-        // GET: api/values
-        //https://localhost:5001/api/values?mode=hack&joke=takkira
-        // tutorial said mvc cannot be use old QueryString And Form.. not .. We do our own way :p
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
-
+        public ProductController()
+        {
+        }
         // POST: api/values
         //https://localhost:5001/api/product
 
@@ -50,6 +52,7 @@ namespace SqlServerDockerCSharp.Controllers
                     catch (Exception ex)
                     {
                         code = ex.Message;
+
                     }
                     break;
                 case "read":
@@ -99,6 +102,7 @@ namespace SqlServerDockerCSharp.Controllers
             {
                 // server error
                 code_return = 500;
+                logger.Warn("somebody try to hack");
             }
             return Ok(new { status, code = code_return, data = data });
         }

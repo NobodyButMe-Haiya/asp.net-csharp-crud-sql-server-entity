@@ -10,6 +10,9 @@
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Service\" />
     <None Remove="jQuery" />
+    <None Remove="NLog" />
+    <None Remove="NLog.Web" />
+    <None Remove="NLog.Web.AspNetCore" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.9" />
@@ -19,6 +22,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="jQuery" Version="3.6.0" />
+    <PackageReference Include="NLog" Version="4.7.11" />
+    <PackageReference Include="NLog.Web" Version="4.14.0" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Service\" />

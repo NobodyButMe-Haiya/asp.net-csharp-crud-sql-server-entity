@@ -1,5 +1,6 @@
-﻿@page
-@{
+﻿@{
+    // you don't give me access we try other way 
+
     //prevent cache problem
     Random random = new Random();
     int num = random.Next(1000);
@@ -12,10 +13,7 @@
     catch (Exception ex)
     {
         System.Diagnostics.Debug.WriteLine(ex.Message);
-        // suppose we need a library  nooo way ..  later :P
-        //    var logWriter = new System.IO.StreamWriter(ViewBag.mapPath);
-        //     logWriter.WriteLine("Log message :" + ex.Message);
-        //     logWriter.Dispose();
+        InjectLog.InjectLogError(ex.Message);
     }
     var notification = "";
 

@@ -1,24 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SqlServerDockerCSharp.Models;
 using SqlServerDockerCSharp.Service;
-
+using NLog;
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SqlServerDockerCSharp.Controllers
 {
+
     [Route("api/[controller]")]
     public class CategoryController : Controller
     {
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
         // POST: api/values
         //https://localhost:5001/api/product
 
         [HttpPost]
         public ActionResult Post()
         {
+
 
             bool status = false;
             List<Category> data = new();
@@ -61,7 +64,7 @@ namespace SqlServerDockerCSharp.Controllers
                 case "update":
                     try
                     {
-                        categoryCrud.Update(CategoryId, CategoryDescription);
+                        CategoryCrud.Update(CategoryId, CategoryDescription);
                         code = ((int)ReturnCode.UPDATE_SUCCESS).ToString();
                         status = true;
                     }
@@ -93,6 +96,7 @@ namespace SqlServerDockerCSharp.Controllers
             {
                 // server error
                 code_return = 500;
+                logger.Warn("somebody try to hack");
             }
             return Ok(new { status, code = code_return, data = data });
         }

@@ -71,3 +71,8 @@
 /Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/obj/Debug/net5.0/SqlServerDockerCSharp.pdb
 /Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/obj/Debug/net5.0/SqlServerDockerCSharp.genruntimeconfig.cache
 /Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/obj/Debug/net5.0/SqlServerDockerCSharp.csproj.AssemblyReference.cache
+/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/bin/Debug/net5.0/nlog.config
+/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/bin/Debug/net5.0/NLog.dll
+/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/bin/Debug/net5.0/NLog.Extensions.Logging.dll
+/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/bin/Debug/net5.0/NLog.Web.dll
+/Users/user/Projects/SqlServerDockerCSharp/SqlServerDockerCSharp/bin/Debug/net5.0/NLog.Web.AspNetCore.dll
